@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		html,body{
+			margin: 0;
+			padding: 0;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+		//设置页面可放置
+		document.body.addEventListener("dragover",function(e){
+			e.preventDefault();
+			console.log("1111")
+		})
+		document.body.addEventListener("drop",function(e){
+			e.preventDefault();//阻止浏览器默认打开拖动的文件的行为
+			console.log(e.dataTransfer.items)
+			Array.from(e.dataTransfer.items).forEach(item=>{
+				console.log(item.fileSystemEntry())
+			})
+
+		
+		})
+	</script>
+</body>
+</html>

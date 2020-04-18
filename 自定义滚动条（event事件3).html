@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		#wrap{
+			position: relative;
+			margin: 0 auto;
+			width: 400px;
+			height: 400px;
+			overflow: hidden;
+			border: 1px solid #ddd;
+		}
+		#list{
+			position: relative;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		#scrollWrap{
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 20px;
+			background: #eee;
+			height: 100%;
+
+		}
+		#scrollBar{
+			position: relative;
+			width: 20px;
+			background: #f00;
+	
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<ul id="list"></ul>
+		<div id="scrollWrap">
+			<div id="scrollBar"></div>
+		</div>	
+	</div>
+	<script type="text/javascript">
+		let wrap=document.querySelector("#wrap");
+		let list=document.querySelector("#list");
+		let scrollWrap=document.querySelector("#scrollWrap");
+		let scrollBar=document.querySelector("#scrollBar");
+
+		//关于样式设置的公共方法
+		function css(el,attr,value){
+			if(arguments.length===3){
+				(el.style)[attr]=value+'px';
+			}else{
+				return parseInt(getComputedStyle(el)[attr]);//获取样式
+			}
+		}
+		//封装的滚轮的方法
+		function scrollWheel(el,upFn,downFn){
+			el.addEventListener("mousewheel",function(e){
+				e.wheelDelta>0?upFn && upFn() :downFn && downFn();
+			})
+			el.addEventListener("DOMWheelScroll",function(e){
+				e.detail>0?downFn && downFn():upFn && upFn();
+			})
+		}
+
+		//根据数据填充列表
+		const data=["海康1","海康2","海康3","海康4","海康5","海康6","海康7","海康8","海康9","海康10","海康11","海康12","海康13","海康14","海康15","海康16","海康17","海康18","海康19","海康20","海康21","海康22","海康23","海康24","海康25","海康26","海康27","海康28","海康29","海康30","海康31","海康32","海康33"];
+		const liList=data.map(item=>{
+			return `<li>${item}</li>`;
+		})
+		list.innerHTML=liList.join("")	
+		//计算滚动条的高度: 显示区的高度/列表的高度=滚动条的高度/滚动条显示区的高度
+		let wrapH=css(wrap,"height");
+		let listH=css(list,"height");
+		let scrollWrapH=css(scrollWrap,"height");
+		let scrollBarH=(wrapH/listH)*scrollWrapH;//滚动条的高度
+
+		css(scrollBar,"height",scrollBarH)
+		//设置滚动条的滚动效果
+		let maxDisY=css(scrollWrap,"height")-css(scrollBar,"height");//滚动条
+		scrollBar.addEventListener("mousedown",function(e){
+			e.preventDefault();//阻止浏览器的默认行为：选中文字
+			let mouseY=e.clientY;
+			let stratPos=css(scrollBar,"top");
+			function moveFn(e){
+				let disY=e.clientY-mouseY;
+				
+
+				let posY=disY+stratPos;
+
+				posY=Math.max(0,disY);//上边界
+				posY=Math.min(posY,maxDisY);//下边界
+				css(scrollBar,"top",posY);
+
+				//列表滚动的高度
+				let scale=posY/maxDisY;
+				let scrollListRange=css(list,"height")-css(wrap,"height");//列表最大能够滚动的高度
+				css(list,"top",-scrollListRange*scale)
+			}
+			document.addEventListener("mousemove",moveFn);
+			document.addEventListener("mouseup",function(){
+				document.removeEventListener("mousemove",moveFn)
+			},{
+				once:true
+			})
+		})
+		//绑定滚轮事件
+		scrollWheel(wrap,function(){
+			let y=css(scrollBar,"top")-10;
+			y=Math.max(0,y);
+			css(scrollBar,"top",y)
+			let scale=y/maxDisY;
+			let scrollListRange=css(list,"height")-css(wrap,"height");//列表最大能够滚动的高度
+			css(list,"top",-scrollListRange*scale)
+			
+		},function(){
+			let y=css(scrollBar,"top")+10;
+			y=Math.min(y,maxDisY)
+			css(scrollBar,"top",y)
+			let scale=y/maxDisY;
+			let scrollListRange=css(list,"height")-css(wrap,"height");//列表最大能够滚动的高度
+			css(list,"top",-scrollListRange*scale)
+		})
+
+
+	</script>
+</body>
+</html>

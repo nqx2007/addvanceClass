@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>koa demo</title>
+    <link rel="stylesheet" type="text/css" href="./global.css" />
+</head>
+<body>
+    <div>{{name}}你好，koa</div>
+    <div>
+        {% if(num>5) %}
+        <p>大于5</p>
+        {% else %}
+        <p>小于5</p>
+        {% endif %}
+        <ul>
+        {% for item in items %}
+        <li>{{item}}</li>
+        {% endfor %}
+        {{name | replace("niu","NIU")}}
+       </ul>
+        
+
+    </div>
+</body>
+</html>

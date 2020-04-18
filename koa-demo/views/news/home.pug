@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Document
+    body
+        ul
+            each item in showpagedata
+                li 
+                    img(src=item.imgUrl, alt="",width="100px",height="100px")
+                    div
+                        h6 
+                            a(href="/news/detail/?id="+ item.id) #{item.title}
+                        p #{item.content}
+        div
+            a(href="javascript:;") <
+            -for(let i=1;i<=pagescount;i++)
+                a(href="/news/index?p="+i) #{i} 
+            a(href="javascript:;") >

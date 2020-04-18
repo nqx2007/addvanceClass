@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		.box{
+			position: relative;
+			width: 200px;
+			height: 200px;
+			font-size: 30px;
+			color: #fff;
+			cursor: default;
+		}
+		#box1{
+			background: #f00;
+		}
+		#box2{
+			margin: 0 auto;
+			background: #0f0;
+		}
+		#box2.active{
+			background: #080;
+		}
+	</style>
+</head>
+<body>
+	<div class="box" id="box1">ele1</div>
+	<div class="box" id="box2">ele2</div>
+	<script type="text/javascript">
+		let box1=document.querySelector("#box1");
+		let box2=document.querySelector("#box2");
+
+
+        dragFn(box1);
+        dragFn(box2);
+        
+		function dragFn(el){
+			el.addEventListener("mousedown",function(e){
+				let mouseStartPos={
+					left:e.clientX,
+					top:e.clientY
+				};
+				let elStartPos={
+					top:css(el,"top"),
+					left:css(el,"left")
+				}
+				function moveFn(e){
+					let mouseDisPos={
+						left:e.clientX-mouseStartPos.left,
+						top:e.clientY-mouseStartPos.top
+					};
+					let elEndPos={
+						left:elStartPos.left+mouseDisPos.left,
+						top:elStartPos.top+mouseDisPos.top
+					}
+					css(el,'top',elEndPos.top);
+					css(el,'left',elEndPos.left);
+
+					if(isContact(box1,box2)){//发生碰撞
+						box2.classList.add("active");
+					}else{
+						box2.classList.remove("active");
+					}
+
+					e.preventDefault();
+				}
+				document.addEventListener("mousemove",moveFn);
+				document.addEventListener("mouseup",function(){
+					document.removeEventListener("mousemove",moveFn)
+				})
+
+			})
+		}
+		function css(el,attr,value){
+			if(arguments.length===3){
+				el.style[attr]=value+'px';
+			}else{
+				return parseInt(getComputedStyle(el)[attr])
+			}
+		}
+		function isContact(el1,el2){
+			//获取两个元素相对于可视区的距离
+			let el1Pos=el1.getBoundingClientRect();
+			let el2Pos=el2.getBoundingClientRect();
+			/*判断没有碰撞的条件
+				el1.right<el1.left
+				el1.left>el2.right
+				el1.top>el2.bottom
+				el2.bottom<el2.top
+			*/
+			if(
+				el1Pos.right<el2Pos.left ||
+				el1Pos.left>el2Pos.right ||
+				el1Pos.top>el2Pos.bottom ||
+				el1Pos.bottom<el2Pos.top){
+					return false
+			}else{
+					return true
+			}
+		}
+	</script>
+</body>
+</html>

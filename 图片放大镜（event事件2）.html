@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		#left{
+			position: relative;
+			width: 200px;
+			border: 1px solid #f00;
+			overflow: hidden;
+			background:#eee;
+
+		}
+		.mask{
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 50px;
+			height: 50px;
+			background: rgba(0,0,0,.2);
+			border-radius: 50%;
+		}
+		#normalImg{
+			width: 200px;
+		}
+		#right{
+			display: none;
+			position: absolute;
+			top: 100px;
+			left: 300px;
+		}
+		.border{
+			width: 100px;
+			height: 100px;
+			overflow: hidden;
+			border-radius: 50%;
+			border: 1px solid #ddd;
+		}
+		#bigImg{
+			width: 200%;
+		}
+	</style>
+</head>
+<body>
+	<div id="left">
+		<img src="timg.jpg" alt="" class="normalImg">
+		<div class="mask"></div>
+	</div>
+	<div id="right">
+		<div id="border">
+			<img src="timg.jpg" alt="" id="bigImg">
+		</div>
+		
+	</div>
+	<script type="text/javascript">
+		let left=document.querySelector("#left");
+		let mask=document.querySelector(".mask");
+		let right=document.querySelector("#right");
+
+
+		left.addEventListener("musemove",function(e){
+			mask.style.display=right.style.display="block";
+
+			let l=e.clientX-left.getBoundingClientRect().left-mask.offsetWidth/2;
+			let t=e.clientX-top.getBoundingClientRect().top-mask.offsetHeight/2;
+			mask.style.left=l+'px';
+			mask.style.topt=t+'px'
+
+		})
+
+	</script>
+</body>
+</html>

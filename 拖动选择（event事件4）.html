@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		#bigBox{
+			list-style: none;
+			width: 100%;
+			height: 200px;
+			border: 1px solid #ddd;
+
+		}
+		#list{
+			list-style: none;
+		}
+		.item{
+			float: left;
+			margin: 5px;
+			width: 100px;
+			height: 100px;
+			background: #0ff;
+			border: 1px solid #ddd;
+		}
+		.item.active{
+			background: #f00;
+		}
+		.box{
+			position: absolute;
+			border: 1px solid #ddd;
+			background: rgba(0,0,255,0.4);
+
+		}
+	</style>
+</head>
+<body>
+	<ul id="bigBox"></ul>
+	<ul id="list"></ul>
+	<script type="text/javascript">;
+	    let bigBox=document.querySelector("#bigBox");
+	    let list=document.querySelector("#list");
+
+	    //生成元素列表
+		let arr="h".repeat(10).split("");
+		let lists=arr.map((item,index)=>{
+			return `<li class="item">${index}</li>`
+		});
+		list.innerHTML=lists.join("");
+		//鼠标拖动生成选择框
+		document.addEventListener("mousedown",function(e){
+			let startPos={
+				top:e.clientY,
+				left:e.clientX
+			}
+			let box=document.createElement("div");
+			box.classList.add("box");
+
+			document.addEventListener("mousemove",moveFn)
+			function moveFn(e){
+				e.preventDefault();
+
+				//获取选择框的宽度和高度
+				let disPos={
+					left:Math.abs(e.clientX-startPos.left),
+					top:Math.abs(e.clientY-startPos.top)
+				}
+				//获取选择框的其实位置
+				let pos={
+					startX:Math.min(startPos.left,e.clientX),
+					startY:Math.min(startPos.top,e.clientY)
+				}
+				//设置选择框
+				box.style.top=pos.startY+'px';
+				box.style.left=pos.startX+'px';
+				box.style.width=disPos.left+'px';
+				box.style.height=disPos.top+'px';
+
+				document.body.appendChild(box);
+
+				//获取所有的元素
+				let items=document.querySelectorAll(".item");
+				items.forEach((item,index)=>{
+					//判断每个元素和选择框是否有重叠
+					if(isContact(box,item)){
+						item.classList.add("active")
+					}else{
+						item.classList.remove("active")
+					}	
+				})
+			}
+			document.addEventListener("mouseup",function(){
+				document.removeEventListener("mousemove",moveFn,{
+					once:true
+				});
+				box.remove();
+				//获取所有碰撞的元素移入到bigBox中
+				let itemsSelected=document.querySelectorAll(".active");
+				itemsSelected.forEach(item=>{
+					item.classList.remove("active");
+					if(item.parentNode.id==="bigBox"){
+						return false;
+					}
+					bigBox.appendChild(item)
+				})
+				
+			})
+
+		})
+
+
+		function isContact(el1,el2){
+			//获取两个元素相对于可视区的距离
+			let el1Pos=el1.getBoundingClientRect();
+			let el2Pos=el2.getBoundingClientRect();
+			/*判断没有碰撞的条件
+				el1.right<el1.left
+				el1.left>el2.right
+				el1.top>el2.bottom
+				el2.bottom<el2.top
+			*/
+			if(
+				el1Pos.right<el2Pos.left ||
+				el1Pos.left>el2Pos.right ||
+				el1Pos.top>el2Pos.bottom ||
+				el1Pos.bottom<el2Pos.top){
+					return false
+			}else{
+					return true
+			}
+		}
+
+	</script>
+</body>
+</html>
